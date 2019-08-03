@@ -1,2 +1,5 @@
 # ContinuousObservationToyPOMDPs.jl
-[WIP] Some simple toy POMDPs with continuous observation spaces for testing algorithms.
+
+Simple Light-Dark and Continuous Observation Tiger POMDPs.
+
+See tests for usage examples.

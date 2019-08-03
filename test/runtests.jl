@@ -15,10 +15,9 @@ for (s, b, a, r, sp, o) in stepthrough(sld, p, filter, "sbarspo", max_steps=10)
 end
 
 qp = solve(QMDPSolver(), sld, verbose=true)
-filter = SIRParticleFilter(sld, 1000)
-for (s, b, a, r, sp, o) in stepthrough(sld, qp, filter, "sbarspo", max_steps=10)
+for (s, b, a, r, sp, o) in stepthrough(sld, qp, "sbarspo", max_steps=10)
     @show (s, a, r, sp, o)
-    @show mean(b)
+    @show b
 end
 
 m = COTigerPOMDP()

@@ -1,6 +1,6 @@
 @with_kw struct COTigerPOMDP <: POMDP{Symbol, Symbol, Float64}
-    r_listen_1::Float64         = -1.0
-    r_listen_2::Float64         = -2.0
+    r_listen1::Float64         = -1.0
+    r_listen2::Float64         = -2.0
     r_findtiger::Float64        = -100.0
     r_escapetiger::Float64      = 10.0
     p_correct_1::Float64        = 0.6
@@ -9,7 +9,7 @@
 end
 
 const stateinds = (left=1, right=2, done=3)
-const actioninds = (left=1, right=2, listen_1=3, listen_2=4)
+const actioninds = (left=1, right=2, listen1=3, listen2=4)
 
 POMDPs.states(::COTigerPOMDP) = keys(stateinds)
 POMDPs.actions(::COTigerPOMDP) = keys(actioninds)
@@ -65,9 +65,9 @@ end
 
 # left = Uniform(0, 0.5), right = Uniform(0.5, 1)
 function POMDPs.observation(m::COTigerPOMDP, a::Symbol, sp::Symbol)
-    if a == :listen_1
+    if a == :listen1
         probs = (m.p_correct_1, 1.0-m.p_correct_1)
-    elseif a == :listen_2
+    elseif a == :listen2
         probs = (m.p_correct_2, 1.0-m.p_correct_2)
     else # a is a door open
         probs = (0.5, 0.5)
@@ -81,10 +81,10 @@ function POMDPs.observation(m::COTigerPOMDP, a::Symbol, sp::Symbol)
 end
 
 function POMDPs.reward(m::COTigerPOMDP, s, a)
-    if a == :listen_1
-        return m.r_listen_1
-    elseif a == :listen_2
-        return m.r_listen_2
+    if a == :listen1
+        return m.r_listen1
+    elseif a == :listen2
+        return m.r_listen2
     elseif s == a # a is open
         return m.r_findtiger
     else

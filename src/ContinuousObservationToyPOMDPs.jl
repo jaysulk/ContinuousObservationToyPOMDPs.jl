@@ -11,8 +11,6 @@ using StaticArrays
 using Statistics
 using Distributions
 
-Uniform = Distributions.Uniform
-
 export
     SimpleLightDark,
     DSimpleLightDark,
@@ -24,7 +22,8 @@ export
 include("simple_lightdark.jl")
 
 export
-    COTigerPOMDP
+    COTigerPOMDP,
+    DOTigerPOMDP
 
 include("tiger.jl")
 

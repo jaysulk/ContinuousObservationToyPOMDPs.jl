@@ -10,6 +10,7 @@ using ParticleFilters
 using StaticArrays
 using Statistics
 using Distributions
+using Base.Iterators
 
 export
     SimpleLightDark,
@@ -23,7 +24,9 @@ include("simple_lightdark.jl")
 
 export
     COTigerPOMDP,
-    DOTigerPOMDP
+    DOTigerPOMDP,
+    TimedCOTigerPOMDP,
+    TimedDOTigerPOMDP
 
 include("tiger.jl")
 

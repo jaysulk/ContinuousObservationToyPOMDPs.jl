@@ -28,5 +28,18 @@ for (s, b, a, r, sp, o, t) in stepthrough(m, qp, "s,b,a,r,sp,o,t", max_steps=100
     @show collect(s=>pdf(b, s) for s in support(b))
 end
 
+m = TimedCOTigerPOMDP()
+qp = solve(QMDPSolver(), m)
+steps = collect(stepthrough(m, qp, "s,b,a,r,sp,o,t", max_steps=100))
+@test length(steps) <= ContinuousObservationToyPOMDPs.horizon(m)
+
+m = TimedDOTigerPOMDP()
+qp = solve(QMDPSolver(), m)
+steps = collect(stepthrough(m, qp, "s,b,a,r,sp,o,t", max_steps=100))
+@test length(steps) <= ContinuousObservationToyPOMDPs.horizon(m)
+
 trans_prob_consistency_check(COTigerPOMDP())
 probability_check(DOTigerPOMDP())
+# # these don't work for problems with terminal states like this :'(
+# trans_prob_consistency_check(TimedCOTigerPOMDP())
+# probability_check(TimedDOTigerPOMDP())

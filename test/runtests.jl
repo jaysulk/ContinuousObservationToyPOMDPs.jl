@@ -32,14 +32,20 @@ m = TimedCOTigerPOMDP()
 qp = solve(QMDPSolver(), m)
 steps = collect(stepthrough(m, qp, "s,b,a,r,sp,o,t", max_steps=100))
 @test length(steps) <= ContinuousObservationToyPOMDPs.horizon(m)
+for (s, b, a, r, sp, o, t) in stepthrough(m, qp, "s,b,a,r,sp,o,t", max_steps=100)
+    @show (t=t, s=s, a=a, r=r, sp=sp, o=o)
+end
 
 m = TimedDOTigerPOMDP()
 qp = solve(QMDPSolver(), m)
 steps = collect(stepthrough(m, qp, "s,b,a,r,sp,o,t", max_steps=100))
 @test length(steps) <= ContinuousObservationToyPOMDPs.horizon(m)
+for (s, b, a, r, sp, o, t) in stepthrough(m, qp, "s,b,a,r,sp,o,t", max_steps=100)
+    @show (t=t, s=s, a=a, r=r, sp=sp, o=o)
+end
 
 trans_prob_consistency_check(COTigerPOMDP())
 probability_check(DOTigerPOMDP())
-# # these don't work for problems with terminal states like this :'(
-# trans_prob_consistency_check(TimedCOTigerPOMDP())
-# probability_check(TimedDOTigerPOMDP())
+# these don't work for problems with terminal states like this :'(
+trans_prob_consistency_check(TimedCOTigerPOMDP())
+probability_check(TimedDOTigerPOMDP())

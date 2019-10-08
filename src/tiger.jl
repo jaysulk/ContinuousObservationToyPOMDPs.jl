@@ -48,7 +48,6 @@ const ContinuousTiger = Union{COTigerPOMDP, TimedCOTigerPOMDP}
 const DiscreteTiger = Union{DOTigerPOMDP, TimedDOTigerPOMDP}
 
 const stateinds = (left=1, right=2, done=3)
-const tigerinds = (left=1, right=2)
 const actioninds = (left=1, right=2, wait=3, listen=4)
 const obsinds = (left=1, right=2)
 tigerpos(s::Symbol) = s
@@ -59,19 +58,19 @@ horizon(m::AbstractTimedTigerPOMDP) = m.horizon
 
 POMDPs.states(::AbstractTigerPOMDP) = keys(stateinds)
 POMDPs.actions(::AbstractTigerPOMDP) = keys(actioninds)
-POMDPs.states(m::AbstractTimedTigerPOMDP) = product(keys(tigerinds), 0:horizon(m))
-POMDPs.observations(::DOTigerPOMDP) = keys(obsinds)
+POMDPs.states(m::AbstractTimedTigerPOMDP) = product(keys(stateinds), 0:horizon(m))
+POMDPs.observations(::DiscreteTiger) = keys(obsinds)
 
 POMDPs.stateindex(::AbstractTigerPOMDP, s) = stateinds[s]
 function POMDPs.stateindex(m::AbstractTimedTigerPOMDP, s)
-    LinearIndices((length(tigerinds), horizon(m)+1))[tigerinds[tigerpos(s)], stepindex(s)+1]
+    LinearIndices((length(stateinds), horizon(m)+1))[stateinds[tigerpos(s)], stepindex(s)+1]
 end
 POMDPs.actionindex(::AbstractTigerPOMDP, a) = actioninds[a]
-POMDPs.obsindex(::DOTigerPOMDP, o) = obsinds[o]
+POMDPs.obsindex(::DiscreteTiger, o) = obsinds[o]
 
 POMDPs.initialstate_distribution(m::AbstractTigerPOMDP) = POMDPModelTools.Uniform((:left, :right))
 function POMDPs.initialstate_distribution(m::AbstractTimedTigerPOMDP)
-    POMDPModelTools.Uniform((t, 0) for t in keys(tigerinds))
+    POMDPModelTools.Uniform((t, 0) for t in (:left,:right))
 end
 
 function POMDPs.transition(m::AbstractTigerPOMDP, s, a)
@@ -82,10 +81,16 @@ function POMDPs.transition(m::AbstractTigerPOMDP, s, a)
     end
 end
 
-POMDPs.transition(m::AbstractTimedTigerPOMDP, s, a) = Deterministic((tigerpos(s), stepindex(s)+1))
+function POMDPs.transition(m::AbstractTimedTigerPOMDP, s, a)
+    if a in (:left, :right)
+        return Deterministic((:done, min(horizon(m), stepindex(s)+1)))
+    else
+        return Deterministic((tigerpos(s), min(horizon(m), stepindex(s)+1)))
+    end
+end
 
 POMDPs.isterminal(m::AbstractTigerPOMDP, s) = s == :done
-POMDPs.isterminal(m::AbstractTimedTigerPOMDP, s) = stepindex(s) >= horizon(m)
+POMDPs.isterminal(m::AbstractTimedTigerPOMDP, s) = stepindex(s) >= horizon(m) || tigerpos(s) == :done
 
 function POMDPs.observation(m::DiscreteTiger, a, sp)
     if a == :listen
@@ -144,7 +149,7 @@ function POMDPs.reward(m::AbstractTigerPOMDP, s, a)
         return m.r_wait
     elseif a == :listen
         return m.r_listen
-    elseif s == a # a is open
+    elseif tigerpos(s) == a # a is open
         return m.r_findtiger
     else
         return m.r_escapetiger

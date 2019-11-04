@@ -2,7 +2,7 @@
 
 ## Simple Light-Dark
 
-[https://slides.com/zacharysunberg/defense-4#/39]()
+[https://slides.com/zacharysunberg/defense-4#/39](https://slides.com/zacharysunberg/defense-4#/39)
 
 ## Continuous Observation Tiger
 

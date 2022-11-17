@@ -48,7 +48,7 @@ const ContinuousTiger = Union{COTigerPOMDP, TimedCOTigerPOMDP}
 const DiscreteTiger = Union{DOTigerPOMDP, TimedDOTigerPOMDP}
 
 const stateinds = (left=1, right=2, done=3)
-const actioninds = (left=1, right=2, wait=3, listen=4)
+const actioninds = (left=1, right=2, listen=3)
 const obsinds = (left=1, right=2)
 tigerpos(s::Symbol) = s
 tigerpos(st::Tuple{Symbol,Int}) = st[1]
